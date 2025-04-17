@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body>
+
+<p th:if="${param.error}" th:text="#{login.failed}"></p>
+
+<form th:if="${formLogin}" th:action="@{/login}" method="post">
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+  <input type="email" name="username" th:placeholder="#{login.form.email.placeholder}" /><br/>
+  <input type="password" name="password" th:placeholder="#{login.form.password.placeholder}" autocomplete="false" /><br/>
+  <button type="submit" th:text="#{login.form.submit}"></button>
+</form>
+
+<a th:if="${formLogin}" th:href="@{/register}" th:text="#{login.register}"></a>
+<a th:if="${formLogin}" th:href="@{/forgot-password}" th:text="#{login.forgot.password}"></a>
+
+</body>
+</html>
