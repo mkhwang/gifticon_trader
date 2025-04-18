@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Email Fail</title>
+</head>
+<body>
+
+<h1>인증에 실패했습니다</h1>
+<form th:action="@{/verify-email}" th:object="${emailVerificationDto}" method="get">
+  <input type="hidden" th:field="*{token}" />
+
+  <p th:if="${#fields.hasErrors('token')}" th:errors="*{token}">에러 메시지</p>
+</form>
+
+</body>
+</html>
