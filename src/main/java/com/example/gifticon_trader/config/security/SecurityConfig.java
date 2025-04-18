@@ -38,7 +38,8 @@ public class SecurityConfig {
                     .permitAll().requestMatchers(this.isPublicEndpointRequestMatcher).permitAll()
                     .requestMatchers("/error").permitAll().anyRequest().authenticated());
 
-    http.formLogin(form -> form.loginPage("/login").permitAll()
+    http.formLogin(form -> form.loginPage("/login")
+            .defaultSuccessUrl("/swagger-ui/index.html").permitAll()
             .failureHandler((request, response, exception) -> {
               if (exception instanceof DisabledException) {
                 response.sendRedirect("/verify-email?email=" + request.getParameter("username"));

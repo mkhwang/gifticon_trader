@@ -13,6 +13,7 @@ public class LoginUser implements UserDetails {
   @Getter
   private final Long id;
   private final String username;
+  private final String password;
   private final Collection<? extends GrantedAuthority> authorities;
   private final boolean enabled;
   private final boolean accountNonExpired;
@@ -22,6 +23,7 @@ public class LoginUser implements UserDetails {
   public LoginUser(User user, Set<SimpleGrantedAuthority> authorities) {
     this.id = user.getId();
     this.username = user.getUsername();
+    this.password = user.getPassword();
     this.authorities = new ArrayList<>(authorities);
     this.enabled = user.isActive();
     this.accountNonExpired = user.isAccountNonExpired();
@@ -38,7 +40,7 @@ public class LoginUser implements UserDetails {
 
   @Override
   public String getPassword() {
-    return "";
+    return this.password;
   }
 
   @Override

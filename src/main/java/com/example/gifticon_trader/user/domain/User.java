@@ -7,7 +7,7 @@ import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
@@ -20,7 +20,6 @@ import static jakarta.persistence.FetchType.LAZY;
 
 @Table(name = "users")
 @Entity(name = "users")
-@EntityListeners(AuditingEntityListener.class)
 public class User extends AbstractAggregateRoot<User> {
 
   @Getter
@@ -31,14 +30,16 @@ public class User extends AbstractAggregateRoot<User> {
   @Getter
   @Column(unique = true)
   private String username;
-  private String password;
 
+  @Getter
+  private String password;
   private boolean enable;
   @Getter
   private boolean accountNonExpired;
   @Getter
   private boolean emailNonExpired;
 
+  @Getter
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = LAZY)
   private Set<Authority> authorities = new HashSet<>();
 
@@ -92,4 +93,7 @@ public class User extends AbstractAggregateRoot<User> {
     return Objects.hash(id);
   }
 
+  public LoginUser toLoginUser(Set<SimpleGrantedAuthority> authorities) {
+    return new LoginUser(this, authorities);
+  }
 }
