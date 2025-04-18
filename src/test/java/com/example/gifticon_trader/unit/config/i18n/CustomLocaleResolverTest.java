@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CustomLocaleResolverTest {
   private final CustomLocaleResolver resolver = new CustomLocaleResolver();

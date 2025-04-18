@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class LoginUser implements UserDetails {
   @Getter
-  private final UserId id;
+  private final Long id;
   private final String username;
   private final Collection<? extends GrantedAuthority> authorities;
   private final boolean enabled;

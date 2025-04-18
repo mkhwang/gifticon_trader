@@ -17,15 +17,19 @@ import java.util.Set;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-@Entity
+
+@Table(name = "users")
+@Entity(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 public class User extends AbstractAggregateRoot<User> {
 
   @Getter
-  @EmbeddedId
-  private UserId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Getter
+  @Column(unique = true)
   private String username;
   private String password;
 
