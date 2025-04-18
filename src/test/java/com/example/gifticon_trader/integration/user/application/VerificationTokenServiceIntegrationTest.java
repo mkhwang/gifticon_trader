@@ -1,6 +1,5 @@
 package com.example.gifticon_trader.integration.user.application;
 
-import com.example.gifticon_trader.user.application.VerificationEmailSender;
 import com.example.gifticon_trader.user.application.VerificationTokenGenerator;
 import com.example.gifticon_trader.user.application.VerificationTokenService;
 import com.example.gifticon_trader.user.application.VerifyEmailResult;
@@ -26,8 +25,6 @@ class VerificationTokenServiceIntegrationTest {
   UserRepository userRepository;
   @Autowired
   VerificationTokenService verificationTokenService;
-  @Autowired
-  VerificationEmailSender verificationEmailSender;
   @Autowired
   VerificationTokenGenerator verificationTokenGenerator;
   @Autowired

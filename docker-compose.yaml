@@ -17,3 +17,21 @@ services:
     ports:
       - "16379:6379"
     restart: always
+  mail:
+    container_name: accounting_inbucket
+    restart: always
+    image: inbucket/inbucket
+    ports:
+      - "2500:2500" # SMTP
+      - "9000:9000" # web interface
+      - "1100:1100" # POP3
+  rabbitmq:
+    image: rabbitmq:4.0.7-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP 포트
+      - "15672:15672" # Management UI (웹 콘솔)
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    restart: always
