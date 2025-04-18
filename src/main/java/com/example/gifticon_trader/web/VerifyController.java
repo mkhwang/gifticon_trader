@@ -34,7 +34,8 @@ public class VerifyController {
   }
 
   @GetMapping("/verify-email-complete")
-  public String verifyEmailToken(@ModelAttribute("emailVerificationDto") @Valid VerificationTokenDto dto, BindingResult bindingResult) {
+  public String verifyEmailToken(@ModelAttribute("emailVerificationDto") @Valid VerificationTokenDto dto,
+                                 BindingResult bindingResult) {
     try {
       verificationTokenService.verifyEmailToken(dto.getToken());
     } catch (Exception e) {

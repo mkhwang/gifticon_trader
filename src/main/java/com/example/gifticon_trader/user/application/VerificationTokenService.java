@@ -1,5 +1,6 @@
 package com.example.gifticon_trader.user.application;
 
+import com.example.gifticon_trader.user.application.exception.InvalidTokenException;
 import com.example.gifticon_trader.user.domain.User;
 import com.example.gifticon_trader.user.domain.VerificationToken;
 import com.example.gifticon_trader.user.infra.UserRepository;
@@ -44,6 +45,23 @@ public class VerificationTokenService {
   }
 
 
+  @Transactional
   public void verifyEmailToken(String token) {
+    VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+        .orElseThrow(InvalidTokenException::new);
+
+    if (verificationToken.isExpired()) {
+      this.handleExpiredToken(verificationToken.getUser());
+      verificationTokenRepository.delete(verificationToken);
+      return;
+    }
+
+    User user = verificationToken.getUser();
+    user.emailVerified();
+    verificationTokenRepository.delete(verificationToken);
+  }
+
+  private void handleExpiredToken(User user) {
+    this.getVerifyEmailResult(user);
   }
 }
