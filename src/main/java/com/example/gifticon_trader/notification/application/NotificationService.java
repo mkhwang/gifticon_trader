@@ -1,10 +1,10 @@
 package com.example.gifticon_trader.notification.application;
 
 import com.example.gifticon_trader.notification.application.exception.NotSupportedNotificationType;
-import com.example.gifticon_trader.notification.application.resolver.message.NotificationMessageResolver;
+import com.example.gifticon_trader.notification.application.resolver.message.NotificationLogResolver;
 import com.example.gifticon_trader.notification.domain.NotificationLog;
 import com.example.gifticon_trader.notification.domain.NotificationType;
-import com.example.gifticon_trader.notification.domain.dto.NotificationMessage;
+import com.example.gifticon_trader.notification.domain.dto.NotificationLogRecord;
 import com.example.gifticon_trader.notification.domain.event.NotificationCreatedEvent;
 import com.example.gifticon_trader.notification.infra.NotificationLogRepository;
 import com.example.gifticon_trader.user.domain.User;
@@ -22,17 +22,17 @@ public class NotificationService {
   private final UserRepository userRepository;
   private final NotificationLogRepository notificationLogRepository;
   private final ApplicationEventPublisher eventPublisher;
-  private final List<NotificationMessageResolver> notificationMessageResolvers;
+  private final List<NotificationLogResolver> notificationLogResolvers;
 
   @Transactional
   public void createWelcomeNotification(Long userId) {
     User user = userRepository.findById(userId).orElseThrow();
 
-    NotificationMessage message = notificationMessageResolvers.stream()
+    NotificationLogRecord message = notificationLogResolvers.stream()
             .filter(r -> r.supports(NotificationType.WELCOME))
             .findFirst()
             .orElseThrow(NotSupportedNotificationType::new)
-            .resolve(user, NotificationType.WELCOME);
+            .resolve(user, NotificationType.WELCOME, null);
 
 
     NotificationLog log = NotificationLog.create(user, NotificationType.WELCOME, message.title(), message.message());

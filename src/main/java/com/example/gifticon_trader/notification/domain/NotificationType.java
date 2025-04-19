@@ -6,6 +6,7 @@ public enum NotificationType {
   WELCOME(NotificationChannel.EMAIL),
   VERIFY_EMAIL(NotificationChannel.EMAIL),
   ADMIN_APPROVED(NotificationChannel.EMAIL, NotificationChannel.FCM),
+  ADMIN_REJECTED(NotificationChannel.EMAIL, NotificationChannel.FCM),
   PAYMENT_COMPLETED(NotificationChannel.EMAIL, NotificationChannel.FCM),
   GIFTCON_RECEIVED(NotificationChannel.EMAIL, NotificationChannel.FCM),
   SETTLEMENT_COMPLETE(NotificationChannel.EMAIL, NotificationChannel.FCM);

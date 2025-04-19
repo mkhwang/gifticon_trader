@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -24,6 +25,8 @@ public class NotificationLog {
 
   private String message;
 
+  private Long referenceId;
+
   private LocalDateTime createdAt;
 
   protected NotificationLog() {}
@@ -35,5 +38,15 @@ public class NotificationLog {
     notificationLog.title = title;
     notificationLog.message = message;
     return notificationLog;
+  }
+
+  public static NotificationLog create(User user, NotificationType notificationType, String title, String message, Long referenceId) {
+    NotificationLog notificationLog = create(user, notificationType, title, message);
+    notificationLog.referenceId = referenceId;
+    return notificationLog;
+  }
+
+  public Set<NotificationChannel> getNotificationChannels() {
+    return this.notificationType.getSupportedChannels();
   }
 }

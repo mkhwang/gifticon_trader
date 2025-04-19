@@ -1,14 +1,13 @@
 package com.example.gifticon_trader.notification.domain;
 
 import com.example.gifticon_trader.config.security.audit.AuditBaseEntity;
+import com.example.gifticon_trader.notification.domain.payload.NotificationPayload;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Entity
@@ -27,29 +26,25 @@ public class NotificationDeliveryLog extends AuditBaseEntity {
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "json")
-  private Map<String, Object> option;
+  private NotificationPayload payload;
 
   private boolean read;
 
-  public static NotificationDeliveryLog create(NotificationLog log, NotificationChannel channel) {
+  public static NotificationDeliveryLog create(NotificationLog log, NotificationChannel channel, NotificationPayload payload) {
     NotificationDeliveryLog deliveryLog = new NotificationDeliveryLog();
     deliveryLog.notificationLog = log;
     deliveryLog.channel = channel;
     deliveryLog.sentAt = null;
     deliveryLog.read = false;
-    deliveryLog.option = new HashMap<>();
+    deliveryLog.payload = payload;
     return deliveryLog;
   }
 
-  public void sent() {
+  public void markSent() {
     this.sentAt = LocalDateTime.now();
   }
 
-  public void read() {
+  public void markRead() {
     this.read = true;
-  }
-
-  public void addOption(String key, Object value) {
-    this.option.put(key, value);
   }
 }
