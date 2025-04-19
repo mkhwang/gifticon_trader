@@ -27,7 +27,7 @@ class UserTest {
     given(encoder.matches(rawPassword, encodedPassword)).willReturn(true);
 
     // when
-    User user = User.register(userName, rawPassword, encoder);
+    User user = User.register(userName, userName, rawPassword, encoder);
 
     // then
     assertThat(user.getUsername()).isEqualTo(userName);
@@ -47,7 +47,7 @@ class UserTest {
     given(encoder.encode(newPassword)).willReturn(newEncoded);
     given(encoder.matches(newPassword, newEncoded)).willReturn(true);
 
-    User user = User.register(userName, password, encoder);
+    User user = User.register(userName, userName, password, encoder);
 
     // when
     user.changePassword(newPassword, encoder);
@@ -59,7 +59,7 @@ class UserTest {
   @Test
   void emailVerified_shouldSetEmailNonExpiredTrue() {
     // given
-    User user = User.register("user",  "raw", encoder);
+    User user = User.register("user", "user", "raw", encoder);
 
     // when
     user.emailVerified();

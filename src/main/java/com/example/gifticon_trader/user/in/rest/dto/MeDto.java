@@ -17,6 +17,7 @@ public class MeDto {
 
   private Long id;
   private String username;
+  private String nickname;
   private Collection<? extends GrantedAuthority> authorities;
   private boolean enabled;
 }

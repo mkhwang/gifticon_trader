@@ -18,4 +18,8 @@ public class RegisterDto {
 
   @NotEmpty
   private String password;
+
+
+  @NotEmpty
+  private String nickname;
 }

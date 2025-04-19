@@ -1,5 +1,6 @@
 package com.example.gifticon_trader.user.application;
 
+import com.example.gifticon_trader.user.application.exception.DuplicateNicknameException;
 import com.example.gifticon_trader.user.application.exception.DuplicateUsernameException;
 import com.example.gifticon_trader.user.domain.User;
 import com.example.gifticon_trader.user.infra.UserRepository;
@@ -21,8 +22,13 @@ public class UserRegisterService {
         .ifPresent(user -> {
           throw new DuplicateUsernameException();
         });
+    userRepository.findByNickname(registerDto.getNickname())
+            .ifPresent(user -> {
+              throw new DuplicateNicknameException();
+            });
 
-    User user = User.register(registerDto.getUsername(), registerDto.getPassword(), passwordEncoder);
+    User user = User.register(registerDto.getUsername(), registerDto.getNickname(),
+            registerDto.getPassword(), passwordEncoder);
     userRepository.save(user);
   }
 }

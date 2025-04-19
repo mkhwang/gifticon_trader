@@ -1,6 +1,7 @@
 package com.example.gifticon_trader.unit.user.application;
 
 import com.example.gifticon_trader.user.application.UserRegisterService;
+import com.example.gifticon_trader.user.application.exception.DuplicateNicknameException;
 import com.example.gifticon_trader.user.application.exception.DuplicateUsernameException;
 import com.example.gifticon_trader.user.domain.User;
 import com.example.gifticon_trader.user.infra.UserRepository;
@@ -36,10 +37,11 @@ class UserRegisterServiceTest {
   void register_shouldThrowException_whenUsernameIsDuplicated() {
     String username = "test@example.com";
     String password = "123456";
+    String nickname = "test";
 
     // given
-    RegisterDto dto = new RegisterDto(username, password);
-    User user = User.register(username, password, passwordEncoder);
+    RegisterDto dto = new RegisterDto(username, password, nickname);
+    User user = User.register(username, nickname, password, passwordEncoder);
     given(userRepository.findByUsername(username))
             .willReturn(Optional.of(user));
 
@@ -51,12 +53,12 @@ class UserRegisterServiceTest {
   @Test
   void register_shouldSaveUser_whenValid() {
     // given
-    RegisterDto dto = new RegisterDto("new@example.com", "Password123");
+    RegisterDto dto = new RegisterDto("new@example.com", "Password123", "new");
     given(userRepository.findByUsername(dto.getUsername()))
             .willReturn(Optional.empty());
 
     given(passwordEncoder.encode(dto.getPassword()))
-            .willReturn("encodedPwd");
+            .willReturn("Password123");
 
     ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
 
@@ -68,5 +70,23 @@ class UserRegisterServiceTest {
 
     User savedUser = userCaptor.getValue();
     assertThat(savedUser.getUsername()).isEqualTo(dto.getUsername());
+  }
+
+  @Test
+  void register_shouldThrowException_whenNicknameIsDuplicated() {
+    // given
+    String username = "new@example.com";
+    String password = "Password123";
+    String nickname = "duplicated";
+
+    RegisterDto dto = new RegisterDto(username, password, nickname);
+    User existingUser = User.register("other@example.com", nickname, "somepass", passwordEncoder);
+
+    given(userRepository.findByUsername(username)).willReturn(Optional.empty());
+    given(userRepository.findByNickname(nickname)).willReturn(Optional.of(existingUser));
+
+    // when & then
+    assertThatThrownBy(() -> userRegisterService.register(dto))
+            .isInstanceOf(DuplicateNicknameException.class);
   }
 }

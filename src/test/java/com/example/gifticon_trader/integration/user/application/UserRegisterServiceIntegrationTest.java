@@ -33,8 +33,9 @@ class UserRegisterServiceIntegrationTest {
   void register_shouldSaveUser() {
     String username = "teset@example.com";
     String password = "123456";
+    String nickname = "test";
     // given
-    RegisterDto dto = new RegisterDto(username, password);
+    RegisterDto dto = new RegisterDto(username, password, nickname);
 
     // when
     userRegisterService.register(dto);
@@ -49,13 +50,14 @@ class UserRegisterServiceIntegrationTest {
   void register_shouldThrowException_whenUsernameIsDuplicated() {
     String username = "teset@example.com";
     String password = "123456";
+    String nickname = "test";
 
     // given
-    RegisterDto dto = new RegisterDto(username, password);
+    RegisterDto dto = new RegisterDto(username, password, nickname);
     userRegisterService.register(dto); // 최초 등록
 
     // when & then
-    RegisterDto dupDto = new RegisterDto(username, password);
+    RegisterDto dupDto = new RegisterDto(username, password, nickname);
     assertThatThrownBy(() -> userRegisterService.register(dupDto))
             .isInstanceOf(DuplicateUsernameException.class);
   }

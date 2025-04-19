@@ -10,6 +10,8 @@
   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
   <input type="email" th:field="*{username}" th:placeholder="#{signup.form.email.placeholder}" /><br/>
   <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p><br />
+  <input type="email" th:field="*{nickname}" th:placeholder="#{signup.form.nickname.placeholder}" /><br/>
+  <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{username}"></p><br />
   <input type="password" th:field="*{password}" th:placeholder="#{signup.form.password.placeholder}" autocomplete="false" /><br/>
   <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p><br />
   <button type="submit" th:text="#{signup.form.submit}"></button>

@@ -35,7 +35,7 @@ class VerificationTokenServiceIntegrationTest {
 
   @Test
   void process_shouldCreateTokenAndSendEmail_ifUsreExistsAndNoToken() {
-    User testUser = User.register("test2@mail.com", "password", passwordEncoder);
+    User testUser = User.register("test2@mail.com", "test2", "password", passwordEncoder);
     userRepository.save(testUser);
 
     VerifyEmailResult processResult = verificationTokenService.process("test2@mail.com");
@@ -49,7 +49,7 @@ class VerificationTokenServiceIntegrationTest {
   @Test
   void verifyEmailToken_shouldActivateUserAndDeleteToken() {
     // given
-    User user = User.register("test@example.com", "password", passwordEncoder);
+    User user = User.register("test@example.com", "test", "password", passwordEncoder);
     userRepository.save(user);
 
     VerificationToken token = VerificationToken.issueFor(user, verificationTokenGenerator);

@@ -33,9 +33,16 @@ public class User extends AbstractAggregateRoot<User> {
 
   @Getter
   private String password;
+
+  @Getter
+  @Column(unique = true)
+  private String nickname;
+
   private boolean enable;
+
   @Getter
   private boolean accountNonExpired;
+
   @Getter
   private boolean emailNonExpired;
 
@@ -52,9 +59,10 @@ public class User extends AbstractAggregateRoot<User> {
 
   protected User() {}
 
-  public static User register(String username, String rawPassword, PasswordEncoder encoder) {
+  public static User register(String username, String nickname, String rawPassword, PasswordEncoder encoder) {
     User user = new User();
     user.username = username;
+    user.nickname = nickname;
     user.password = encoder.encode(rawPassword);  // 비밀번호 암호화
     user.enable = false;
     user.accountNonExpired = true;
