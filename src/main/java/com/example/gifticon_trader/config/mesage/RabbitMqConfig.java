@@ -1,7 +1,7 @@
 package com.example.gifticon_trader.config.mesage;
 
-import com.example.gifticon_trader.common.message.MessagePublisher;
-import com.example.gifticon_trader.common.message.RabbitMessagePublisher;
+import com.example.gifticon_trader.common.message.publisher.MessagePublisher;
+import com.example.gifticon_trader.common.message.publisher.RabbitMessagePublisher;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;

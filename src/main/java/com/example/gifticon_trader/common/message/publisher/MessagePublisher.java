@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.common.message;
+package com.example.gifticon_trader.common.message.publisher;
 
 public interface MessagePublisher {
 

@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.common.message;
+package com.example.gifticon_trader.common.message.publisher;
 
 import org.springframework.kafka.core.KafkaTemplate;
 
