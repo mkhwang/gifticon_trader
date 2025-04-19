@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.common;
+package com.example.gifticon_trader.common.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;

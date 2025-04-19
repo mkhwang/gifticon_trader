@@ -1,6 +1,6 @@
 package com.example.gifticon_trader.user.application;
 
-import com.example.gifticon_trader.common.EmailService;
+import com.example.gifticon_trader.common.email.EmailService;
 import com.example.gifticon_trader.user.domain.event.UserRegisteredEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

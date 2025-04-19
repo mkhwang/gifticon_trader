@@ -33,6 +33,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.kafka:spring-kafka:3.3.4'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'

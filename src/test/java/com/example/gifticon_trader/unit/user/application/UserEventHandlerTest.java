@@ -1,6 +1,6 @@
 package com.example.gifticon_trader.unit.user.application;
 
-import com.example.gifticon_trader.common.EmailService;
+import com.example.gifticon_trader.common.email.EmailService;
 import com.example.gifticon_trader.user.application.UserEventHandler;
 import com.example.gifticon_trader.user.domain.event.UserRegisteredEvent;
 import org.junit.jupiter.api.Test;
