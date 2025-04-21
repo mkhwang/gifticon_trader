@@ -16,6 +16,7 @@ import com.example.gifticon_trader.notification.infra.NotificationDeliveryLogRep
 import com.example.gifticon_trader.notification.infra.NotificationLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -30,7 +31,12 @@ public class NotificationLogEventHandler {
   private final List<NotificationPayloadAssembler> notificationPayloadAssemblers;
   private final MessagePublisher messagePublisher;
 
-  @Transactional
+  /**
+   * 독릭된 transaction을 사용하게 위해 REQUIRES_NEW로 설정
+   *
+   * @param event
+   */
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   @TransactionalEventListener
   public void handleNotificationLogEvent(NotificationCreatedEvent event) {
     NotificationLog log = notificationLogRepository.findById(event.id()).orElseThrow(
