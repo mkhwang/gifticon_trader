@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.gifticon.domain;
+package com.example.gifticon_trader.common.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

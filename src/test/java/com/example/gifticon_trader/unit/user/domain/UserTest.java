@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.unituser.domain;
+package com.example.gifticon_trader.unit.user.domain;
 
 import com.example.gifticon_trader.user.domain.User;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class UserTest {
   PasswordEncoder encoder;
 
   @Test
-  void register_shouldInitializeFields_andEmitEvent() {
+  void register_shouldInitializeFields() {
     String rawPassword = "12345678";
     String userName = "testuser";
     String encodedPassword = "encoded12345678";

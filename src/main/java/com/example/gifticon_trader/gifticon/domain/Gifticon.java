@@ -1,14 +1,22 @@
 package com.example.gifticon_trader.gifticon.domain;
 
+import com.example.gifticon_trader.common.domain.Money;
 import com.example.gifticon_trader.gifticon.application.exception.InvalidExpirationDateException;
 import com.example.gifticon_trader.gifticon.application.exception.InvalidPriceException;
 import com.example.gifticon_trader.gifticon.domain.command.GifticonRegisterCommand;
+import com.example.gifticon_trader.gifticon.domain.event.GifticonOnInspectCompleteEvent;
+import com.example.gifticon_trader.gifticon.domain.event.GifticonOnInspectRejectedEvent;
+import com.example.gifticon_trader.gifticon.domain.event.GifticonStartInspectEvent;
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table
+@Getter
 @Entity(name = "gifticon")
 public class Gifticon extends AbstractAggregateRoot<Gifticon> {
   @Id
@@ -25,9 +33,6 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
   private Money price;
 
   @Enumerated(EnumType.STRING)
-  private GifticonInspectStatus inspectStatus;
-
-  @Enumerated(EnumType.STRING)
   private GifticonStatus status;
 
   private LocalDate expirationDate;
@@ -35,6 +40,9 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
   private float discountRate;
 
   private boolean settled;
+
+  @OneToMany(mappedBy = "gifticon", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  private List<GifticonInspectRejectHistory> gifticonInspectHistories;
 
   protected Gifticon() {}
 
@@ -56,8 +64,26 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
     }
 
     gifticon.discountRate = command.getDiscountRate();
-    gifticon.inspectStatus = GifticonInspectStatus.ON_INSPECT;
-    gifticon.status = GifticonStatus.INSPECTING;
+    gifticon.status = GifticonStatus.WAIT_FOR_INSPECT;
     return gifticon;
+  }
+
+  public void startInspect() {
+    this.status = GifticonStatus.INSPECTING;
+    registerEvent(new GifticonStartInspectEvent(this.id));
+  }
+
+  public void rejectInspect(String reason) {
+    this.status = GifticonStatus.INSPECT_REJECTED;
+    if (this.gifticonInspectHistories == null) {
+      this.gifticonInspectHistories = new ArrayList<>();
+    }
+    this.gifticonInspectHistories.add(GifticonInspectRejectHistory.of(this, reason));
+    registerEvent(new GifticonOnInspectRejectedEvent(this.id, reason));
+  }
+
+  public void passInspect() {
+    this.status = GifticonStatus.READY_FOR_SALE;
+    registerEvent(new GifticonOnInspectCompleteEvent(this.id));
   }
 }

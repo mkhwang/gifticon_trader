@@ -20,7 +20,4 @@ public class GifticonImage extends AuditBaseEntity {
   private String imageUrl;
 
   private Integer order;
-
-  @Enumerated(EnumType.STRING)
-  private GifticonInspectStatus gifticonInspectStatus;
 }
