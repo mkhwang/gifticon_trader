@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +30,10 @@ public class UserController {
   @GetMapping("/api/user/search")
   public Page<UserDto> searchUsers(@RequestParam(required = false) UserSearchDto userSearchDto) {
     return userSearchService.searchUsers(userSearchDto);
+  }
+
+  @GetMapping("/api/user/{id}/profile")
+  public UserDto getUserProfile(@PathVariable Long id) {
+    return userSearchService.getUserProfile(id);
   }
 }
