@@ -5,7 +5,7 @@ import com.example.gifticon_trader.config.mesage.MessageConstants;
 import com.example.gifticon_trader.notification.application.exception.NotSupportedNotificationType;
 import com.example.gifticon_trader.notification.application.exception.NotificationLogNotFoundException;
 import com.example.gifticon_trader.notification.application.resolver.message.NotificationLogResolver;
-import com.example.gifticon_trader.notification.application.resolver.payload.NotificationPayloadAssembler;
+import com.example.gifticon_trader.notification.application.resolver.payload.assembler.NotificationPayloadAssembler;
 import com.example.gifticon_trader.notification.domain.NotificationChannel;
 import com.example.gifticon_trader.notification.domain.NotificationDeliveryLog;
 import com.example.gifticon_trader.notification.domain.NotificationLog;

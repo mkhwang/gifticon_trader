@@ -47,4 +47,8 @@ public class NotificationDeliveryLog extends AuditBaseEntity {
   public void markRead() {
     this.read = true;
   }
+
+  public String getUsername() {
+    return notificationLog.getUser().getUsername();
+  }
 }

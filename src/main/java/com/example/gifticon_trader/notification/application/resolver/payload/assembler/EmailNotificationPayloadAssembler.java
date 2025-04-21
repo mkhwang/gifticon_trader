@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.notification.application.resolver.payload;
+package com.example.gifticon_trader.notification.application.resolver.payload.assembler;
 
 import com.example.gifticon_trader.notification.application.exception.NotSupportedNotificationType;
 import com.example.gifticon_trader.notification.application.resolver.payload.email.EmailNotificationPayloadResolver;

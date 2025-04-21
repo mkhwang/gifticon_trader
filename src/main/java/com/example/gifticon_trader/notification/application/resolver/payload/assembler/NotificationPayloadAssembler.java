@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.notification.application.resolver.payload;
+package com.example.gifticon_trader.notification.application.resolver.payload.assembler;
 
 import com.example.gifticon_trader.notification.domain.NotificationChannel;
 import com.example.gifticon_trader.notification.domain.dto.NotificationLogRecord;
