@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
+import java.util.List;
 
 
 @Getter
@@ -18,6 +17,6 @@ public class MeDto {
   private Long id;
   private String username;
   private String nickname;
-  private Collection<? extends GrantedAuthority> authorities;
+  private List<String> authorities;
   private boolean enabled;
 }
