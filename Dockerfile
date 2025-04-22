@@ -5,6 +5,7 @@ COPY . .
 
 RUN gradle dependencies
 
+# TODO: run tests
 RUN gradle clean build -x test
 
 FROM openjdk:17-slim

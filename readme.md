@@ -19,16 +19,17 @@ DDD(도메인 주도 설계)와 TDD를 적용하여, 유지보수성과 확장�
 - Database: PostgreSQL, H2 (test)
 - Email: JavaMailSender
 - Redis Session & Caching
-- TODOs
-    - RabbitMQ 기반 메시지 큐잉
+- RabbitMQ 기반 메시지 큐잉
+- gitflow CI (self-hosted)
+  - [Docker Hub](https://hub.docker.com/r/hmk6264/gifticon-trader)
 
 ## Aggregate Root
 
 - User
 - Gifticon
-- Settlement
 - Notification
-
+- Transaction 
+- Settlement
 
 ## 구현기능
 - 인증
