@@ -1,17 +1,19 @@
 package com.example.gifticon_trader.notification.domain;
 
-import com.example.gifticon_trader.config.security.audit.AuditBaseEntity;
 import com.example.gifticon_trader.notification.domain.payload.NotificationPayload;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
-public class NotificationDeliveryLog extends AuditBaseEntity {
+public class NotificationDeliveryLog {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -29,6 +31,13 @@ public class NotificationDeliveryLog extends AuditBaseEntity {
   private NotificationPayload payload;
 
   private boolean read;
+
+  @CreatedDate
+  @Column(updatable = false)
+  private Instant createdDate;
+
+  @LastModifiedDate
+  private Instant lastModifiedDate;
 
   public static NotificationDeliveryLog create(NotificationLog log, NotificationChannel channel, NotificationPayload payload) {
     NotificationDeliveryLog deliveryLog = new NotificationDeliveryLog();

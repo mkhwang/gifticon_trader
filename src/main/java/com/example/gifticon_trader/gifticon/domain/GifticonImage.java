@@ -19,5 +19,6 @@ public class GifticonImage extends AuditBaseEntity {
 
   private String imageUrl;
 
-  private Integer order;
+  @Column(name = "displayOrder")
+  private Integer displayOrder;
 }

@@ -5,15 +5,21 @@ import com.example.gifticon_trader.user.in.rest.dto.UserDto;
 import com.example.gifticon_trader.user.in.rest.dto.UserSearchDto;
 import com.example.gifticon_trader.user.infra.UserQueryRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.ComparableExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,12 +45,15 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
       return new PageImpl<>(List.of(), pageable, 0);
     }
 
+    List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifiers(pageable, user.getType(), user.getMetadata().getName());
+
     List<UserDto> result = queryFactory
             .select(Projections.constructor(UserDto.class, user.id, user.nickname))
             .from(user)
             .where(searchCondition)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
+            .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
             .fetch();
 
     return new PageImpl<>(result, pageable, total);
@@ -56,5 +65,21 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
       builder.and(QUser.user.nickname.containsIgnoreCase(searchDto.getNickname()));
     }
     return builder;
+  }
+
+
+  private List<OrderSpecifier<?>> getOrderSpecifiers(Pageable pageable, Class<?> entityClass, String alias) {
+    List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+    PathBuilder<?> pathBuilder = new PathBuilder<>(entityClass, alias);
+
+    for (Sort.Order order : pageable.getSort()) {
+      Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+
+      // ComparableExpression으로 캐스팅
+      ComparableExpression<?> expression = pathBuilder.getComparable(order.getProperty(), Comparable.class);
+      orderSpecifiers.add(new OrderSpecifier<>(direction, expression));
+    }
+
+    return orderSpecifiers;
   }
 }

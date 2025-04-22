@@ -27,8 +27,7 @@ public class VerifyController {
 
     return switch (result) {
       case ALREADY_VERIFIED -> "redirect:/login";
-      case NEED_VERIFICATION -> "verify-email-waiting";
-      case EMAIL_SENT -> "verify-email";
+      case NEED_VERIFICATION, EMAIL_SENT -> "verify-email-waiting";
       case FAILURE -> "verify-email-fail";
     };
   }

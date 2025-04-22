@@ -51,7 +51,7 @@ public class NotificationService {
             .orElseThrow(NotSupportedNotificationType::new)
             .resolve(user, NotificationType.VERIFY_EMAIL, referenceId);
 
-    NotificationLog log = NotificationLog.create(user, NotificationType.VERIFY_EMAIL, message.title(), message.message());
+    NotificationLog log = NotificationLog.createWithReference(user, NotificationType.VERIFY_EMAIL, message.title(), message.message(), referenceId);
     notificationLogRepository.save(log);
 
     eventPublisher.publishEvent(new NotificationCreatedEvent(log.getId()));

@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.unit.user.in;
+package com.example.gifticon_trader.unit.user.in.rest;
 
 import com.example.gifticon_trader.config.GenericMapper;
 import com.example.gifticon_trader.user.application.UserSearchService;

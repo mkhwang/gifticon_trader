@@ -20,7 +20,7 @@ public class VerifyEmailNotificationResolver implements EmailNotificationPayload
 
   @Override
   public boolean supports(NotificationType notificationType) {
-    return notificationType == NotificationType.WELCOME;
+    return notificationType == NotificationType.VERIFY_EMAIL;
   }
 
   @Override

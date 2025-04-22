@@ -40,7 +40,7 @@ public class NotificationLog {
     return notificationLog;
   }
 
-  public static NotificationLog create(User user, NotificationType notificationType, String title, String message, Long referenceId) {
+  public static NotificationLog createWithReference(User user, NotificationType notificationType, String title, String message, Long referenceId) {
     NotificationLog notificationLog = create(user, notificationType, title, message);
     notificationLog.referenceId = referenceId;
     return notificationLog;
