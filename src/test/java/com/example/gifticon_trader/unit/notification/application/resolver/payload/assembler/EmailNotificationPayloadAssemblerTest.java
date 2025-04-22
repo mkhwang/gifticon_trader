@@ -1,7 +1,7 @@
 package com.example.gifticon_trader.unit.notification.application.resolver.payload.assembler;
 
 import com.example.gifticon_trader.notification.application.resolver.payload.assembler.EmailNotificationPayloadAssembler;
-import com.example.gifticon_trader.notification.application.resolver.payload.email.EmailNotificationPayloadResolver;
+import com.example.gifticon_trader.notification.application.resolver.payload.email.WelcomeEmailNotificationResolver;
 import com.example.gifticon_trader.notification.domain.NotificationChannel;
 import com.example.gifticon_trader.notification.domain.NotificationType;
 import com.example.gifticon_trader.notification.domain.dto.NotificationLogRecord;
@@ -26,12 +26,11 @@ public class EmailNotificationPayloadAssemblerTest {
   EmailNotificationPayloadAssembler emailNotificationPayloadAssembler;
 
   @Mock
-  EmailNotificationPayloadResolver emailNotificationPayloadResolver;
+  WelcomeEmailNotificationResolver emailNotificationPayloadResolver;
 
   @BeforeEach
   void setUp() {
-    emailNotificationPayloadResolver = mock(EmailNotificationPayloadResolver.class);
-    given(emailNotificationPayloadResolver.supports(NotificationType.WELCOME)).willReturn(true);
+    emailNotificationPayloadResolver = mock(WelcomeEmailNotificationResolver.class);
     emailNotificationPayloadAssembler = new EmailNotificationPayloadAssembler(
             List.of(emailNotificationPayloadResolver)
     );
@@ -61,6 +60,7 @@ public class EmailNotificationPayloadAssemblerTest {
             NotificationType.WELCOME,
             null
     );
+    given(emailNotificationPayloadResolver.supports(NotificationType.WELCOME)).willReturn(true);
 
     // when
     emailNotificationPayloadAssembler.assemble(welcomeRecord);

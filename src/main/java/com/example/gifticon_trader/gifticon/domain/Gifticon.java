@@ -27,9 +27,16 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
 
   private String description;
 
+  @Embedded
+  @AttributeOverrides({
+          @AttributeOverride(name = "amount", column = @Column(name = "original_price"))
+  })
   private Money originalPrice;
 
   @Embedded
+  @AttributeOverrides({
+          @AttributeOverride(name = "amount", column = @Column(name = "price"))
+  })
   private Money price;
 
   @Enumerated(EnumType.STRING)
@@ -44,7 +51,8 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
   @OneToMany(mappedBy = "gifticon", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private List<GifticonInspectRejectHistory> gifticonInspectHistories;
 
-  protected Gifticon() {}
+  protected Gifticon() {
+  }
 
   public static Gifticon fromCommand(GifticonRegisterCommand command) {
     Gifticon gifticon = new Gifticon();
