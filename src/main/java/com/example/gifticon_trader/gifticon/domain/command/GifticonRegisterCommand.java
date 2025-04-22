@@ -8,17 +8,17 @@ import java.time.LocalDate;
 public class GifticonRegisterCommand {
   private final String name;
   private final String description;
+  private final String giftCode;
   private final Long originalPrice;
   private final Long price;
   private final LocalDate expirationDate;
-  private final float discountRate;
 
-  public GifticonRegisterCommand(String name, String description, Long originalPrice, Long price, LocalDate expirationDate) {
+  public GifticonRegisterCommand(String name, String description, String giftCode, Long originalPrice, Long price, LocalDate expirationDate) {
     this.name = name;
     this.description = description;
+    this.giftCode = giftCode;
     this.originalPrice = originalPrice;
     this.price = price;
     this.expirationDate = expirationDate;
-    this.discountRate = (float) (originalPrice - price) / originalPrice * 100;
   }
 }
