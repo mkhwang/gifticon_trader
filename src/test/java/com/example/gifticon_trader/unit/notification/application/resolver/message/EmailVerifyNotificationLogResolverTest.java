@@ -34,6 +34,6 @@ class EmailVerifyNotificationLogResolverTest {
     assertEquals("안녕하세요, %s님!".formatted("user"), record.title());
     assertEquals("이메일 인증을 위해 아래 링크를 클릭해주세요.", record.message());
     assertEquals(NotificationType.VERIFY_EMAIL, record.notificationType());
-    assertNull(record.targetId());
+    assertNull(record.referenceId());
   }
 }

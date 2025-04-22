@@ -1,4 +1,4 @@
-package com.example.gifticon_trader.user.application;
+package com.example.gifticon_trader.user.application.event;
 
 import com.example.gifticon_trader.notification.application.NotificationService;
 import com.example.gifticon_trader.user.domain.User;

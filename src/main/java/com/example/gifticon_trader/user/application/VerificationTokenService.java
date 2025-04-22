@@ -3,9 +3,11 @@ package com.example.gifticon_trader.user.application;
 import com.example.gifticon_trader.user.application.exception.InvalidTokenException;
 import com.example.gifticon_trader.user.domain.User;
 import com.example.gifticon_trader.user.domain.VerificationToken;
+import com.example.gifticon_trader.user.domain.event.VerificationEmailEvent;
 import com.example.gifticon_trader.user.infra.UserRepository;
 import com.example.gifticon_trader.user.infra.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VerificationTokenService {
   private final UserRepository userRepository;
-  private final VerificationEmailSender verificationEmailSender;
   private final VerificationTokenRepository verificationTokenRepository;
   private final VerificationTokenGenerator verificationTokenGenerator;
+  private final ApplicationEventPublisher eventPublisher;
 
   @Transactional
   public VerifyEmailResult process(String email) {
@@ -40,7 +42,7 @@ public class VerificationTokenService {
   private VerifyEmailResult getVerifyEmailResult(User existUser) {
     VerificationToken token = VerificationToken.issueFor(existUser, verificationTokenGenerator);
     verificationTokenRepository.save(token);
-    verificationEmailSender.send(existUser.getUsername(), token.getToken());
+    eventPublisher.publishEvent(new VerificationEmailEvent(existUser.getId(), token.getId()));
     return VerifyEmailResult.EMAIL_SENT;
   }
 

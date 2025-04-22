@@ -34,7 +34,7 @@ class WelcomeNotificationLogResolverUnitTest {
     assertThat(record.title()).isEqualTo("환영합니다, user님!");
     assertThat(record.message()).isEqualTo("기프티콘 거래소에 가입해주셔서 감사합니다");
     assertThat(record.notificationType()).isEqualTo(NotificationType.WELCOME);
-    assertThat(record.targetId()).isNull();
+    assertThat(record.referenceId()).isNull();
   }
 
 }

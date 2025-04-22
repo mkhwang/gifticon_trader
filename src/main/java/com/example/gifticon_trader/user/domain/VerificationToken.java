@@ -38,4 +38,8 @@ public class VerificationToken {
   public static VerificationToken issueFor(User user, VerificationTokenGenerator generator) {
     return new VerificationToken(user, generator.generate(), LocalDateTime.now().plusHours(1));
   }
+
+  public String getUsername() {
+    return user.getUsername();
+  }
 }

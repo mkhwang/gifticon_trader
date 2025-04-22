@@ -1,5 +1,15 @@
 # Gifticon Trader
 
+## 프로젝트 소개
+
+기프티콘 거래 플랫폼입니다. 기프티콘을 사고 팔 수 있는 기능을 제공합니다.
+
+## 프로젝트 목적
+
+기프티콘 거래 플랫폼을 구현하여 Spring Boot와 JPA 활용한 웹 애플리케이션 개발 경험을 쌓고,
+
+DDD(도메인 주도 설계)와 TDD를 적용하여, 유지보수성과 확장성을 고려한 아키텍처를 설계합니다.
+
 ## 기술 스택 요약
 
 - Language: Java 17
@@ -11,6 +21,14 @@
 - Redis Session & Caching
 - TODOs
     - RabbitMQ 기반 메시지 큐잉
+
+## Aggregate Root
+
+- User
+- Gifticon
+- Settlement
+- Notification
+
 
 ## 구현기능
 - 인증

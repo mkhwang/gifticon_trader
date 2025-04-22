@@ -41,4 +41,20 @@ public class NotificationService {
     eventPublisher.publishEvent(new NotificationCreatedEvent(log.getId()));
   }
 
+  @Transactional
+  public void createEmailVerificationNotification(Long userId, Long referenceId) {
+    User user = userRepository.findById(userId).orElseThrow();
+
+    NotificationLogRecord message = notificationLogResolvers.stream()
+            .filter(r -> r.supports(NotificationType.VERIFY_EMAIL))
+            .findFirst()
+            .orElseThrow(NotSupportedNotificationType::new)
+            .resolve(user, NotificationType.VERIFY_EMAIL, referenceId);
+
+    NotificationLog log = NotificationLog.create(user, NotificationType.VERIFY_EMAIL, message.title(), message.message());
+    notificationLogRepository.save(log);
+
+    eventPublisher.publishEvent(new NotificationCreatedEvent(log.getId()));
+  }
+
 }
