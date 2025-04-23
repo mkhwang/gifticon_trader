@@ -2,13 +2,63 @@
 
 ## 프로젝트 소개
 
-기프티콘 거래 플랫폼입니다. 기프티콘을 사고 팔 수 있는 기능을 제공합니다.
+가상의 기프티콘 거래 플랫폼입니다. 기프티콘을 사고 팔 수 있는 기능을 제공합니다.
 
-## 프로젝트 목적
+## 개요
 
 기프티콘 거래 플랫폼을 구현하여 Spring Boot와 JPA 활용한 웹 애플리케이션 개발 경험을 쌓고,
-
 DDD(도메인 주도 설계)와 TDD를 적용하여, 유지보수성과 확장성을 고려한 아키텍처를 설계합니다.
+
+## 아키텍처 요약
+
+Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전 과정을 도메인 중심 설계(DDD)로 구성하였으며, 서비스 안정성과 확장성을 고려해 비동기 처리, 캐싱 전략, 이벤트 기반 구조를 일부 도입한 시스템입니다.
+
+### 주요 흐름
+
+1. **회원 가입 및 인증**
+    - 사용자는 이메일 기반으로 회원가입 후, 인증 메일을 통해 계정 활성화
+    - 인증 메일은 `JavaMailSender`를 통해 비동기 발송
+
+2. **기프티콘 등록 및 심사**
+    - 사용자가 기프티콘 등록 → `GifticonCreatedEvent` 발행
+    - `RabbitMQ`를 통해 심사 큐에 비동기 전달
+    - 관리 시스템이 큐 소비 → 승인 또는 거절 처리
+
+3. **기프티콘 거래**
+    - 구매자가 기프티콘을 선택하여 거래 시작
+    - 거래 상태는 도메인 상태 머신(`GifticonStatus`) 기반으로 변경 및 검증
+
+4. **정산 처리**
+    - 관리자 권한으로 거래 완료된 건을 조회하고 정산 처리
+    - 정산 대상은 Redis에 캐싱되어 반복 조회 성능 최적화
+
+5. **알림 시스템**
+    - 기프티콘 심사, 거래 완료 등 주요 이벤트 발생 시 메일 알림 발송
+    - 추후 Kafka 기반 다채널 알림 확장 고려 중
+
+### 주요 설계 구조
+
+| 컴포넌트        | 역할 |
+|-----------------|------|
+| Spring Boot     | REST API 제공, 도메인 중심 서비스 설계 |
+| Spring Security | 인증, 권한 처리 (이메일 인증 포함) |
+| JPA + PostgreSQL| 도메인 모델 저장소, Aggregate Root 기반 설계 |
+| Redis           | 세션 및 데이터 캐싱 |
+| RabbitMQ        | 기프티콘 심사 이벤트 비동기 처리 |
+| JavaMailSender  | 인증 및 알림 메일 전송 |
+| Docker + GitHub Actions | CI 파이프라인 구성 (Docker Hub로 이미지 배포) |
+
+### 통신 방식
+
+- **내부 통신**: RESTful API 기반
+- **비동기 이벤트**: RabbitMQ 통한 메시지 발행/소비
+- **알림 채널**: 이메일 기반 (향후 FCM, SMS 등 확장 고려)
+
+### 설계 특징
+
+- 도메인 중심의 Aggregate 설계: `User`, `Gifticon`, `Transaction`, `Settlement`, `Notification`
+- 상태 기반 거래 흐름 관리: `GifticonStatus` 기반 상태 전이 및 검증
+- 기술 선택 시 운영 효율과 성능을 함께 고려한 구조 구성
 
 ## 시나리오
 
@@ -44,34 +94,22 @@ DDD(도메인 주도 설계)와 TDD를 적용하여, 유지보수성과 확장�
 ### 정산
 - 관리자는 기프티콘 판매자에게 정산을 진행합니다.
    1. 거래 완료된 기프티콘을 조회합니다.
-   2. 정산할 기프티콘을 선택하여 정산합니다. (수수료 5%)
+   2. 정산할 기프티콘을 선택하여 정산합니다.
 
 ### 알림
 - 사용자는 기프티콘 등록, 거래, 정산 등의 알림을 받을 수 있습니다.
    1. 알림은 이메일로 발송됩니다.
    2. 알림은 사용자가 확인할 수 있습니다.
 
-## Aggregate Root
+## 사용 기술 및 구조 요약
 
-1. User
-2. Gifticon
-3. Notification
-4. Transaction
-5. Settlement
-
-
-## 기술 스택 요약
-
-- Language: Java 17
-- Framework: Spring Boot 3, Spring Security, JPA, Thymeleaf
-- Build Tool: Gradle
-- Test: JUnit5, Mockito
-- Database: PostgreSQL, H2 (test)
-- Email: JavaMailSender
-- Redis Session & Caching
-- RabbitMQ 기반 메시지 큐잉
-- gitflow CI (self-hosted)
-  - [Docker Hub](https://hub.docker.com/r/hmk6264/gifticon-trader)
+- **Language/Framework**: Java 17, Spring Boot 3, Spring Security, JPA
+- **Database**: PostgreSQL (운영), H2 (테스트), Redis (세션 & 캐싱)
+    - 사용자 세션 관리 및 기프티콘 정산 상태 캐싱 등에 활용
+- **Messaging**: RabbitMQ (이벤트 비동기 처리)
+- **Email**: JavaMailSender (회원 인증 및 거래 알림 발송)
+- **CI/CD & 운영**: [GitHub Actions](https://github.com/mkhwang/gifticon_trader/actions) 기반 GitFlow, [Docker Hub](https://hub.docker.com/r/hmk6264/gifticon-trader)로 이미지 빌드 및 배포
+- **Test**: JUnit5, Mockito 기반 도메인 단위 테스트, 상태 이벤트 검증 포함
 
 ## Aggregate Root
 
@@ -80,6 +118,22 @@ DDD(도메인 주도 설계)와 TDD를 적용하여, 유지보수성과 확장�
 - Notification
 - Transaction 
 - Settlement
+
+### 관계 흐름
+
+```
++--------+        +-----------+         +---------------+         +-------------+
+|  User  | <----> | Gifticon  | <-----> |  Transaction  | <-----> | Settlement  |
++--------+        +-----------+         +---------------+         +-------------+
+     |                  |                      |                         |
+     |                  |                      |                         |
+     +----------------> +--------------------> +-----------------------> +
+           알림 트리거       (심사, 반려, 승인)     (거래 요청/완료)         (정산 완료)
+                |                                                      
+          +--------------------+         
+          |  Notification      | (RabbitMQ 기반 비동기 알림 처리) 
+          +--------------------+
+```
 
 ## 구현기능
 - 인증
