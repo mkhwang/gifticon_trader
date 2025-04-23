@@ -1,3 +1,3 @@
 package com.example.gifticon_trader.gifticon.domain.event;
 
-public record GifticonOnInspectCompleteEvent(Long id){ }
+public record GifticonCancelTradeEvent(Long id){ }

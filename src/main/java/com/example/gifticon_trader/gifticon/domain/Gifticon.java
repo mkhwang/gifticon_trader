@@ -1,11 +1,10 @@
 package com.example.gifticon_trader.gifticon.domain;
 
 import com.example.gifticon_trader.common.domain.Money;
-import com.example.gifticon_trader.gifticon.application.exception.InvalidExpirationDateException;
-import com.example.gifticon_trader.gifticon.application.exception.InvalidPriceException;
+import com.example.gifticon_trader.gifticon.application.exception.*;
 import com.example.gifticon_trader.gifticon.domain.command.GifticonRegisterCommand;
-import com.example.gifticon_trader.gifticon.domain.event.GifticonOnInspectCompleteEvent;
-import com.example.gifticon_trader.gifticon.domain.event.GifticonOnInspectRejectedEvent;
+import com.example.gifticon_trader.gifticon.domain.event.GifticonInspectCompleteEvent;
+import com.example.gifticon_trader.gifticon.domain.event.GifticonInspectRejectedEvent;
 import com.example.gifticon_trader.gifticon.domain.event.GifticonStartInspectEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -92,7 +91,7 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
       this.status = GifticonStatus.INSPECTING;
       registerEvent(new GifticonStartInspectEvent(this.id));
     }
-    throw new IllegalStateException("Cannot start inspect when status is not WAIT_FOR_INSPECT");
+    throw new CanNotStartInspectException();
   }
 
   public void rejectInspect(String reason) {
@@ -102,18 +101,24 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
         this.gifticonInspectHistories = new ArrayList<>();
       }
       this.gifticonInspectHistories.add(GifticonInspectRejectHistory.of(this, reason));
-      registerEvent(new GifticonOnInspectRejectedEvent(this.id, reason));
+      registerEvent(new GifticonInspectRejectedEvent(this.id, reason));
     }
-    throw new IllegalStateException("Cannot reject inspect when status is not INSPECTING");
+    throw new CanNotRejectInspectException();
+  }
+
+  public void requestInspect() {
+    if (this.status.canRequestInspect()) {
+      this.status = GifticonStatus.WAIT_FOR_INSPECT;
+    }
+    throw new CanNotRequestInspectException();
   }
 
   public void passInspect() {
     if (this.status.canRejectInspect()) {
       this.status = GifticonStatus.READY_FOR_SALE;
-      registerEvent(new GifticonOnInspectCompleteEvent(this.id));
+      registerEvent(new GifticonInspectCompleteEvent(this.id));
     }
-    throw new IllegalStateException("Cannot reject inspect when status is not INSPECTING");
-
+    throw new CanNotPassInspectStatusException();
   }
 
   public void changePrice(Long amount) {
@@ -126,45 +131,45 @@ public class Gifticon extends AbstractAggregateRoot<Gifticon> {
   }
 
   public void onTrade() {
-    if (this.status != GifticonStatus.READY_FOR_SALE) {
-      throw new IllegalStateException("Cannot start trade when status is not READY_FOR_SALE");
+    if (this.status.canTrade()) {
+      this.status = GifticonStatus.ON_TRADE;
     }
-    this.status = GifticonStatus.ON_TRADE;
+    throw new CanNotOnTradeException();
   }
 
   public void completeTrade() {
-    if (this.status != GifticonStatus.ON_TRADE) {
-      throw new IllegalStateException("Cannot complete trade when status is not ON_TRADE");
+    if (this.status.canTradeComplete()) {
+      this.status = GifticonStatus.TRADE_COMPLETED;
     }
-    this.status = GifticonStatus.TRADE_COMPLETED;
+    throw new CanNotCompleteTradeException();
   }
 
   public void cancelTrade() {
-    if (this.status != GifticonStatus.ON_TRADE) {
-      throw new IllegalStateException("Cannot cancel trade when status is not ON_TRADE");
+    if (this.status.canTradeCancel()) {
+      this.status = GifticonStatus.READY_FOR_SALE;
     }
-    this.status = GifticonStatus.READY_FOR_SALE;
+    throw new CanNotCancelTradeException();
   }
 
   public void expire() {
     if (this.expirationDate.isBefore(LocalDate.now()) && this.status.canExpire()) {
       this.status = GifticonStatus.EXPIRED;
     }
-    throw new IllegalStateException("Cannot expire when status is not EXPIRED");
+    throw new CanNotGifticonExpireException();
   }
 
   public void settle() {
     if (this.status.canSettle()) {
       this.settled = true;
     }
-    throw new IllegalStateException("Cannot settle when status is not TRADE_COMPLETED");
+    throw new CanNotGifticonSettleException();
   }
 
   public void changeGiftCode(String giftCode) {
     if (this.status.canChangeGiftCode()) {
       this.giftCode = GiftCode.of(giftCode);
     }
-    throw new IllegalStateException("Cannot change gif code when status is not WAIT_FOR_INSPECT");
+    throw new CanNotGifticonChangeCodeException();
   }
 
   public void changeExpirationDate(LocalDate expirationDate) {

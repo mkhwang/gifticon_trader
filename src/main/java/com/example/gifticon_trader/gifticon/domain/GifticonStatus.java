@@ -20,7 +20,7 @@ public enum GifticonStatus {
   }
 
   public boolean canChangePrice() {
-    return List.of(ON_TRADE, EXPIRED, TRADE_COMPLETED).contains(this);
+    return !List.of(ON_TRADE, EXPIRED, TRADE_COMPLETED).contains(this);
   }
 
   public boolean canSettle() {
@@ -33,5 +33,21 @@ public enum GifticonStatus {
 
   public boolean canExpire() {
     return List.of(WAIT_FOR_INSPECT, INSPECTING, INSPECT_REJECTED, READY_FOR_SALE).contains(this);
+  }
+
+  public boolean canRequestInspect() {
+    return this == INSPECT_REJECTED;
+  }
+
+  public boolean canTradeCancel() {
+    return this == ON_TRADE;
+  }
+
+  public boolean canTradeComplete() {
+    return this == ON_TRADE;
+  }
+
+  public boolean canTrade() {
+    return this == READY_FOR_SALE;
   }
 }

@@ -59,6 +59,5 @@ class GifticonTest {
     // when & then
     assertThatThrownBy(() -> Gifticon.fromCommand(command))
             .isInstanceOf(InvalidExpirationDateException.class);
-
   }
 }
