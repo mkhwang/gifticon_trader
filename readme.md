@@ -42,7 +42,7 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
 | 컴포넌트        | 역할 |
 |-----------------|------|
 | Spring Boot     | REST API 제공, 도메인 중심 서비스 설계 |
-| Spring Security | 인증, 권한 처리 (이메일 인증 포함) |
+| Spring Security | 인증, 권한 처리 |
 | JPA + PostgreSQL| 도메인 모델 저장소, Aggregate Root 기반 설계 |
 | Redis           | 세션 및 데이터 캐싱 |
 | RabbitMQ        | 기프티콘 심사 이벤트 비동기 처리 |
