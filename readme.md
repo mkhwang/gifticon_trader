@@ -39,15 +39,15 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
 
 ### 주요 설계 구조
 
-| 컴포넌트        | 역할 |
-|-----------------|------|
-| Spring Boot     | REST API 제공, 도메인 중심 서비스 설계 |
-| Spring Security | 인증, 권한 처리 |
-| JPA + PostgreSQL| 도메인 모델 저장소, Aggregate Root 기반 설계 |
-| Redis           | 세션 및 데이터 캐싱 |
-| RabbitMQ        | 기프티콘 심사 이벤트 비동기 처리 |
-| JavaMailSender  | 인증 및 알림 메일 전송 |
-| Docker + GitHub Actions | CI 파이프라인 구성 (Docker Hub로 이미지 배포) |
+| 컴포넌트                        | 역할 |
+|-----------------------------|------|
+| Spring Boot                 | REST API 제공, 도메인 중심 서비스 설계 |
+| Spring Security             | 인증, 권한 처리 |
+| JPA + QueryDSL + PostgreSQL | 도메인 모델 저장소, Aggregate Root 기반 설계 |
+| Redis                       | 세션 및 데이터 캐싱 |
+| RabbitMQ                    | 이벤트 비동기 처리 |
+| JavaMailSender              | 인증 및 알림 메일 전송 |
+| Docker + GitHub Actions     | CI 파이프라인 구성 (Docker Hub로 이미지 배포) |
 
 ### 통신 방식
 
@@ -106,7 +106,8 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
 - **Language/Framework**: Java 17, Spring Boot 3, Spring Security, JPA
 - **Database**: PostgreSQL (운영), H2 (테스트), Redis (세션 & 캐싱)
     - 사용자 세션 관리 및 기프티콘 정산 상태 캐싱 등에 활용
-- **Messaging**: RabbitMQ (이벤트 비동기 처리)
+- **Messaging**: RabbitMQ (이벤트 비동기 처리) 
+    - 설정에 따라 Kafa로 변경 가능
 - **Email**: JavaMailSender (회원 인증 및 거래 알림 발송)
 - **CI/CD & 운영**: [GitHub Actions](https://github.com/mkhwang/gifticon_trader/actions) 기반 GitFlow, [Docker Hub](https://hub.docker.com/r/hmk6264/gifticon-trader)로 이미지 빌드 및 배포
 - **Test**: JUnit5, Mockito 기반 도메인 단위 테스트, 상태 이벤트 검증 포함
@@ -131,9 +132,23 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
            알림 트리거       (심사, 반려, 승인)     (거래 요청/완료)         (정산 완료)
                 |                                                      
           +--------------------+         
-          |  Notification      | (RabbitMQ 기반 비동기 알림 처리) 
+          |  Notification      | (RabbitMQ / Kafka 기반 비동기 알림 처리) 
           +--------------------+
 ```
+
+## Message Queue
+
+- RabbitMQ를 기본으로 설정하였으며, Kafka로 변경 시 `application.yml`에서 `app.message.broker` 값을 `kafka`로 변경하면 됩니다.
+- Kafka로 변경 시, `@ConditionalOnMessageBroker(MessageBrokerType.KAFKA)` 어노테이션을 사용하여 Kafka 관련 설정을 추가해야 합니다.
+  - 현재 KafkaTemplate 설정만 추가되어 있으며, KafkaListener 설정은 추가되지 않았습니다.
+
+
+## TDD
+- coverage 70% 이상을 목표로 테스트 코드를 작성하였습니다.
+- 단위 테스트와 통합 테스트를 package를 구분하여 작성하였습니다.
+  - `src/test/java/com/example/gifticon_trader/unit`: 단위 테스트
+  - `src/test/java/com/example/gifticon_trader/integration`: 통합 테스트
+
 
 ## 구현기능
 - 인증
@@ -141,8 +156,10 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
   - [x] 로그인
   - [x] 로그아웃
   - [x] 이메일 인증
+- 알림
+  - [x] 이메일 알림
 - 기프티콘
-  - [ ] 기프티콘 등록
+  - [ ] 기프티콘 등록  **[개발중🪏]**
   - [ ] 기프티콘 수정
   - [ ] 기프티콘 삭제
   - [ ] 기프티콘 심사
@@ -153,3 +170,4 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
   - [ ] 기프티콘 거래완료
 - 정산
   - [ ] 판매자 정산
+
