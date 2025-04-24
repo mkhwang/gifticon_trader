@@ -1,6 +1,7 @@
 package com.example.gifticon_trader.gifticon.domain;
 
 import com.example.gifticon_trader.common.domain.Money;
+import com.example.gifticon_trader.config.security.audit.AggregateAuditEntity;
 import com.example.gifticon_trader.gifticon.application.exception.*;
 import com.example.gifticon_trader.gifticon.domain.command.GifticonRegisterCommand;
 import com.example.gifticon_trader.gifticon.domain.event.GifticonInspectCompleteEvent;
@@ -8,7 +9,6 @@ import com.example.gifticon_trader.gifticon.domain.event.GifticonInspectRejected
 import com.example.gifticon_trader.gifticon.domain.event.GifticonStartInspectEvent;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 @Table
 @Getter
 @Entity(name = "gifticon")
-public class Gifticon extends AbstractAggregateRoot<Gifticon> {
+public class Gifticon extends AggregateAuditEntity<Gifticon> {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;

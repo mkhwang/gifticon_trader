@@ -1,13 +1,13 @@
 package com.example.gifticon_trader.user.infra.impl;
 
 import com.example.gifticon_trader.user.domain.QUser;
+import com.example.gifticon_trader.user.in.rest.dto.QUserDto;
 import com.example.gifticon_trader.user.in.rest.dto.UserDto;
 import com.example.gifticon_trader.user.in.rest.dto.UserSearchDto;
 import com.example.gifticon_trader.user.infra.UserQueryRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.ComparableExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -48,7 +48,7 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
     List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifiers(pageable, user.getType(), user.getMetadata().getName());
 
     List<UserDto> result = queryFactory
-            .select(Projections.constructor(UserDto.class, user.id, user.nickname))
+            .select(new QUserDto(user.id, user.nickname))
             .from(user)
             .where(searchCondition)
             .offset(pageable.getOffset())
