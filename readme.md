@@ -136,9 +136,22 @@ Gifticon Trader는 기프티콘 등록부터 심사, 거래, 정산까지의 전
           +--------------------+
 ```
 
+## Security
+
+- Spring Security를 사용하여 인증 및 권한 처리를 구현하였습니다.
+- 기본적으로 인증되지 않은 사용자는 모든 API에 접근할 수 없습니다.
+- `@IsPublicEndPoint` 어노테이션을 사용하여 인증 없이 접근할 수 있는 API를 설정하였습니다.
+- `app.security.public-urls` 설정을 통해 인증 없이 접근할 수 있는 URL을 추가 설정할 수 있습니다.
+- `@PreAuthorize("hasRole('ROLE_ADMIN')")` 어노테이션을 사용하여 관리자 권한 접근을 제한하였습니다.
+
+
 ## Message Queue
 
 - RabbitMQ를 기본으로 설정하였으며, Kafka로 변경 시 `application.yml`에서 `app.message.broker` 값을 `kafka`로 변경하면 됩니다.
+
+### Why RabbitMQ?
+- Kafka 대신 RabbitMQ를 우선 사용한 이유는, 메시지 유실보다 즉각성 있는 처리와 구현 난이도를 우선 고려했기 때문입니다. 
+- 단, 향후 대용량 이벤트 처리나 로그성 이벤트 확장을 고려해 Kafka 전환 여지는 남겨두었습니다
 - Kafka로 변경 시, `@ConditionalOnMessageBroker(MessageBrokerType.KAFKA)` 어노테이션을 사용하여 Kafka 관련 설정을 추가해야 합니다.
   - 현재 KafkaTemplate 설정만 추가되어 있으며, KafkaListener 설정은 추가되지 않았습니다.
 

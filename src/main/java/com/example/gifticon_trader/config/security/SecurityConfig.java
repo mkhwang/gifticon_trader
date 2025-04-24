@@ -33,10 +33,12 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-            (authorize) -> authorize.requestMatchers(this.securityProperties.getPublicUrls())
-                    .permitAll().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                    .permitAll().requestMatchers(this.isPublicEndpointRequestMatcher).permitAll()
-                    .requestMatchers("/error").permitAll().anyRequest().authenticated());
+            (authorize) ->
+                    authorize.requestMatchers(this.securityProperties.getPublicUrls()).permitAll()
+                            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                            .requestMatchers(this.isPublicEndpointRequestMatcher).permitAll()
+                            .requestMatchers("/error").permitAll()
+                            .anyRequest().authenticated());
 
     http.formLogin(form -> form.loginPage("/login")
             .defaultSuccessUrl("/swagger-ui/index.html").permitAll()

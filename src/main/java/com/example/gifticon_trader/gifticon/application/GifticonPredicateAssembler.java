@@ -22,7 +22,7 @@ public class GifticonPredicateAssembler extends AbstractPredicateAssembler<Gifti
     List<BooleanExpression> expressions = new ArrayList<>();
 
     append(expressions, keywordContains(condition.getKeyword()));
-    append(expressions, statusEq(condition.getStatus()));
+    append(expressions, statusIn(condition.getStatuses()));
     append(expressions, expirationAfter(condition.getStartDate()));
     append(expressions, expirationBefore(condition.getEndDate()));
     append(expressions, sellerIdEq(condition.getSellerId()));
@@ -33,11 +33,12 @@ public class GifticonPredicateAssembler extends AbstractPredicateAssembler<Gifti
   private BooleanExpression keywordContains(String keyword) {
     if (!StringUtils.hasText(keyword)) return null;
     return gifticon.name.containsIgnoreCase(keyword)
-            .or(gifticon.description.containsIgnoreCase(keyword));
+            .or(gifticon.description.containsIgnoreCase(keyword))
+            .or(gifticon.createdBy.nickname.containsIgnoreCase(keyword));
   }
 
-  private BooleanExpression statusEq(GifticonStatus status) {
-    return status != null ? gifticon.status.eq(status) : null;
+  private BooleanExpression statusIn(List<GifticonStatus> statuses) {
+    return statuses != null && !statuses.isEmpty() ? gifticon.status.in(statuses) : null;
   }
 
   private BooleanExpression expirationAfter(LocalDate startDate) {
