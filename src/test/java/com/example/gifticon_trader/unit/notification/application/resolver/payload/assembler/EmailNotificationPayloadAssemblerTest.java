@@ -1,6 +1,7 @@
 package com.example.gifticon_trader.unit.notification.application.resolver.payload.assembler;
 
 import com.example.gifticon_trader.notification.application.resolver.payload.assembler.EmailNotificationPayloadAssembler;
+import com.example.gifticon_trader.notification.application.resolver.payload.email.EmailNotificationPayloadResolver;
 import com.example.gifticon_trader.notification.application.resolver.payload.email.WelcomeEmailNotificationResolver;
 import com.example.gifticon_trader.notification.domain.NotificationChannel;
 import com.example.gifticon_trader.notification.domain.NotificationType;
@@ -10,30 +11,31 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class EmailNotificationPayloadAssemblerTest {
-  @InjectMocks
-  EmailNotificationPayloadAssembler emailNotificationPayloadAssembler;
-
   @Mock
   WelcomeEmailNotificationResolver emailNotificationPayloadResolver;
 
+  @Spy
+  List<EmailNotificationPayloadResolver> emailNotificationPayloadResolvers = new ArrayList<>();
+
+  @InjectMocks
+  EmailNotificationPayloadAssembler emailNotificationPayloadAssembler;
+
   @BeforeEach
   void setUp() {
-    emailNotificationPayloadResolver = mock(WelcomeEmailNotificationResolver.class);
-    emailNotificationPayloadAssembler = new EmailNotificationPayloadAssembler(
-            List.of(emailNotificationPayloadResolver)
-    );
+    emailNotificationPayloadResolvers.add(emailNotificationPayloadResolver);
   }
 
   @Test

@@ -32,15 +32,11 @@ class UserSearchServiceTest {
   @InjectMocks
   UserSearchService userSearchService;
 
+
   @Test
   void searchUsers_shouldReturnPageUserDto() {
     // Given
     UserSearchDto userSearchDto = mock(UserSearchDto.class);
-    userQueryRepository = mock(UserQueryRepository.class);
-    userRepository = mock(UserRepository.class);
-    genericMapper = mock(GenericMapper.class);
-    userSearchService = new UserSearchService(userQueryRepository, userRepository, genericMapper);
-
 
     // When
     userSearchService.searchUsers(userSearchDto);
@@ -53,10 +49,6 @@ class UserSearchServiceTest {
   void getUserProfile_shouldReturnUserDto() {
     // Given
     Long id = 1L;
-    userQueryRepository = mock(UserQueryRepository.class);
-    userRepository = mock(UserRepository.class);
-    genericMapper = mock(GenericMapper.class);
-    userSearchService = new UserSearchService(userQueryRepository, userRepository, genericMapper);
     given(userRepository.findById(id)).willReturn(Optional.of(mock(User.class)));
 
     // When

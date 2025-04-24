@@ -21,11 +21,11 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class VerifyEmailNotificationResolverTest {
-  @InjectMocks
-  VerifyEmailNotificationResolver verifyEmailNotificationResolver;
-
   @Mock
   VerificationTokenRepository verificationTokenRepository;
+
+  @InjectMocks
+  VerifyEmailNotificationResolver verifyEmailNotificationResolver;
 
   @Test
   void supports() {
@@ -60,8 +60,6 @@ class VerifyEmailNotificationResolverTest {
     Long expectedReferenceId = 1L;
     VerificationToken verificationToken = mock(VerificationToken.class);
 
-    verificationTokenRepository = mock(VerificationTokenRepository.class);
-    verifyEmailNotificationResolver = new VerifyEmailNotificationResolver(verificationTokenRepository);
     given(verificationToken.getUsername()).willReturn("username");
     given(verificationToken.getToken()).willReturn("token");
     given(verificationTokenRepository.findById(expectedReferenceId)).willReturn(Optional.of(verificationToken));

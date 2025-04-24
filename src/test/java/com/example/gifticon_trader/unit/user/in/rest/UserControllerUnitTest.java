@@ -8,7 +8,6 @@ import com.example.gifticon_trader.user.in.rest.UserController;
 import com.example.gifticon_trader.user.in.rest.dto.MeDto;
 import com.example.gifticon_trader.user.in.rest.dto.UserDto;
 import com.example.gifticon_trader.user.in.rest.dto.UserSearchDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,28 +23,19 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerUnitTest {
-
-  @InjectMocks
-  private UserController userController;
-
   @Mock
   GenericMapper genericMapper;
 
   @Mock
   UserSearchService userSearchService;
 
-  @BeforeEach
-  void setUp() {
-    genericMapper = mock(GenericMapper.class);
-    userSearchService = mock(UserSearchService.class);
-    userController = new UserController(genericMapper, userSearchService);
-  }
+  @InjectMocks
+  UserController userController;
 
   @Test
   void getMe_shouldReturnMappedMeDto() {

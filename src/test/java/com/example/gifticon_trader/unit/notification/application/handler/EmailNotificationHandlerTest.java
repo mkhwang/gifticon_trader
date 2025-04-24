@@ -8,10 +8,11 @@ import com.example.gifticon_trader.notification.domain.payload.EmailPayload;
 import com.example.gifticon_trader.notification.infra.NotificationDeliveryLogRepository;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.thymeleaf.TemplateEngine;
@@ -26,6 +27,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class EmailNotificationHandlerTest {
 
   @Mock
@@ -38,16 +40,7 @@ class EmailNotificationHandlerTest {
   NotificationDeliveryLogRepository deliveryLogRepository;
 
   @InjectMocks
-  private EmailNotificationHandler handler;
-
-  @BeforeEach
-  void setup() {
-    mailSender = mock(JavaMailSender.class);
-    i18nService = mock(I18nService.class);
-    templateEngine = mock(TemplateEngine.class);
-    deliveryLogRepository = mock(NotificationDeliveryLogRepository.class);
-  }
-
+  EmailNotificationHandler handler;
 
   @Test
   void send_shouldSendEmail_whenValidPayloadProvided() throws Exception {
@@ -69,7 +62,6 @@ class EmailNotificationHandlerTest {
 
     MimeMessage mimeMessage = new MimeMessage((Session) null);
     given(mailSender.createMimeMessage()).willReturn(mimeMessage);
-    handler = new EmailNotificationHandler(mailSender, i18nService, templateEngine, deliveryLogRepository);
 
     // When
     handler.send(deliveryId);
@@ -86,7 +78,6 @@ class EmailNotificationHandlerTest {
     given(log.getChannel()).willReturn(NotificationChannel.FCM); // not EMAIL
 
     given(deliveryLogRepository.findById(deliveryId)).willReturn(Optional.of(log));
-    handler = new EmailNotificationHandler(mailSender, i18nService, templateEngine, deliveryLogRepository);
 
     // When
     handler.send(deliveryId);
@@ -115,7 +106,6 @@ class EmailNotificationHandlerTest {
 
     doThrow(new MailSendException("메일 전송 실패"))
             .when(mailSender).send(message);
-    handler = new EmailNotificationHandler(mailSender, i18nService, templateEngine, deliveryLogRepository);
 
     // Then
     assertThatThrownBy(() -> handler.send(deliveryId))

@@ -2,6 +2,7 @@ package com.example.gifticon_trader.unit.notification.application;
 
 import com.example.gifticon_trader.notification.application.NotificationService;
 import com.example.gifticon_trader.notification.application.resolver.message.NotificationLogResolver;
+import com.example.gifticon_trader.notification.application.resolver.message.WelcomeNotificationLogResolver;
 import com.example.gifticon_trader.notification.domain.NotificationLog;
 import com.example.gifticon_trader.notification.domain.NotificationType;
 import com.example.gifticon_trader.notification.domain.dto.NotificationLogRecord;
@@ -9,13 +10,16 @@ import com.example.gifticon_trader.notification.domain.event.NotificationCreated
 import com.example.gifticon_trader.notification.infra.NotificationLogRepository;
 import com.example.gifticon_trader.user.domain.User;
 import com.example.gifticon_trader.user.infra.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,11 +39,19 @@ class NotificationServiceUnitTest {
   @Mock
   ApplicationEventPublisher eventPublisher;
 
+  @Spy
+  List<NotificationLogResolver> notificationLogResolvers = new ArrayList<>();
+
   @Mock
-  NotificationLogResolver welcomeResolver;
+  WelcomeNotificationLogResolver welcomeResolver;
 
   @InjectMocks
   NotificationService notificationService;
+
+  @BeforeEach
+  void setUp() {
+    notificationLogResolvers.add(welcomeResolver);
+  }
 
   @Test
   void createWelcomeNotification_shouldCreateLogAndPublishEvent() {
@@ -51,13 +63,6 @@ class NotificationServiceUnitTest {
     NotificationLogRecord record = new NotificationLogRecord("Welcome Title", "Welcome Message", NotificationType.WELCOME, null);
     given(welcomeResolver.supports(NotificationType.WELCOME)).willReturn(true);
     given(welcomeResolver.resolve(mockUser, NotificationType.WELCOME, null)).willReturn(record);
-
-    notificationService = new NotificationService(
-            userRepository,
-            notificationLogRepository,
-            eventPublisher,
-            List.of(welcomeResolver)
-    );
 
     // when
     notificationService.createWelcomeNotification(userId);

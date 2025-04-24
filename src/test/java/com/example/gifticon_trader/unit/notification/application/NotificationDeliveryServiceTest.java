@@ -21,14 +21,14 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationDeliveryServiceTest {
-  @InjectMocks
-  NotificationDeliveryService notificationDeliveryService;
-
   @Mock
   NotificationHandlerFactory notificationHandlerFactory;
 
   @Mock
   NotificationDeliveryLogRepository notificationDeliveryLogRepository;
+
+  @InjectMocks
+  NotificationDeliveryService notificationDeliveryService;
 
   @Test
   void process() {
@@ -45,11 +45,6 @@ class NotificationDeliveryServiceTest {
     given(mockDeliveryLog.getNotificationLog()).willReturn(mockNotificationLog);
     given(notificationDeliveryLogRepository.findById(deliveryId)).willReturn(Optional.of(mockDeliveryLog));
     given(notificationHandlerFactory.getHandler(notificationType)).willReturn(mockNotificationHandler);
-
-    notificationDeliveryService = new NotificationDeliveryService(
-            notificationHandlerFactory,
-            notificationDeliveryLogRepository
-    );
 
     // When
     notificationDeliveryService.process(deliveryId);

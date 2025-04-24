@@ -9,7 +9,6 @@ import com.example.gifticon_trader.user.domain.User;
 import com.example.gifticon_trader.user.domain.VerificationToken;
 import com.example.gifticon_trader.user.infra.UserRepository;
 import com.example.gifticon_trader.user.infra.VerificationTokenRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,16 +38,6 @@ class VerificationTokenServiceTest {
 
   @InjectMocks
   VerificationTokenService service;
-
-  @BeforeEach
-  void setUp() {
-    userRepository = mock(UserRepository.class);
-    tokenRepository = mock(VerificationTokenRepository.class);
-    tokenGenerator = mock(VerificationTokenGenerator.class);
-    eventPublisher = mock(ApplicationEventPublisher.class);
-
-    service = new VerificationTokenService(userRepository, tokenRepository, tokenGenerator, eventPublisher);
-  }
 
   @Test
   void process_shouldReturnAlreadyVerified_ifUserIsActive() {

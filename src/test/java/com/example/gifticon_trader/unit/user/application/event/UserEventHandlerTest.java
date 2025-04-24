@@ -25,7 +25,6 @@ class UserEventHandlerTest {
   @Mock
   NotificationService notificationService;
 
-
   @InjectMocks
   UserEventHandler userEventHandler;
 
@@ -34,11 +33,8 @@ class UserEventHandlerTest {
     // given
     String email = "test@example.com";
     UserRegisteredEvent event = new UserRegisteredEvent(email);
-    userRepository = mock(UserRepository.class);
-    notificationService = mock(NotificationService.class);
     User user = mock(User.class);
 
-    userEventHandler = new UserEventHandler(userRepository, notificationService);
     given(user.getId()).willReturn(1L);
     given(userRepository.findByUsername(email)).willReturn(Optional.of(user));
 

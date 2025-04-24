@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class GifticonTest {
@@ -24,7 +23,6 @@ class GifticonTest {
 
   @BeforeEach
   void setUp() {
-    command = mock(GifticonRegisterCommand.class);
     given(command.getName()).willReturn("Test Gifticon");
     given(command.getDescription()).willReturn("This is a test gifticon.");
     given(command.getOriginalPrice()).willReturn(1000L);
