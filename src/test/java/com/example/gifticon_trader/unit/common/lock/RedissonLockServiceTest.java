@@ -78,7 +78,7 @@ class RedissonLockServiceTest {
     redissonLockService.unlock(lockKey);
 
     // then
-    verify(mockLock).unlock(); // ✅ 호출되는지 확인
+    verify(mockLock).unlock();
   }
 
   @Test
