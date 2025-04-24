@@ -12,7 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class VerificationEventHandler {
 
-  private final NotificationService notificationService;;
+  private final NotificationService notificationService;
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   @TransactionalEventListener
