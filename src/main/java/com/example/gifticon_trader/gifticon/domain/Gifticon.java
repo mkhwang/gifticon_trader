@@ -53,6 +53,9 @@ public class Gifticon extends AggregateAuditEntity<Gifticon> {
 
   private boolean settled;
 
+  @ElementCollection
+  private List<String> tags;
+
   @OneToMany(mappedBy = "gifticon", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private List<GifticonInspectRejectHistory> gifticonInspectHistories;
 
@@ -61,15 +64,15 @@ public class Gifticon extends AggregateAuditEntity<Gifticon> {
 
   public static Gifticon fromCommand(GifticonRegisterCommand command) {
     Gifticon gifticon = new Gifticon();
-    gifticon.name = command.getName();
-    gifticon.description = command.getDescription();
-    gifticon.giftCode = GiftCode.of(command.getGiftCode());
-    gifticon.originalPrice = Money.of(command.getOriginalPrice());
-    gifticon.price = Money.of(command.getPrice());
-    gifticon.expirationDate = command.getExpirationDate();
+    gifticon.name = command.name();
+    gifticon.description = command.description();
+    gifticon.giftCode = GiftCode.of(command.giftCode());
+    gifticon.originalPrice = Money.of(command.originalPrice());
+    gifticon.price = Money.of(command.price());
+    gifticon.expirationDate = command.expirationDate();
+    gifticon.tags = command.tags();
 
-    LocalDate expirationDate = command.getExpirationDate();
-    if (expirationDate.isBefore(LocalDate.now())) {
+    if (gifticon.expirationDate.isBefore(LocalDate.now())) {
       throw new InvalidExpirationDateException();
     }
 

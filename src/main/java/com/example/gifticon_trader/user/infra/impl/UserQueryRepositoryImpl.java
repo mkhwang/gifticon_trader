@@ -15,11 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,15 +43,13 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
       return new PageImpl<>(List.of(), pageable, 0);
     }
 
-    List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifiers(pageable, user.getType(), user.getMetadata().getName());
-
     List<UserDto> result = queryFactory
             .select(new QUserDto(user.id, user.nickname))
             .from(user)
             .where(searchCondition)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
-            .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
+            .orderBy(getOrderSpecifiers(pageable, user.getType(), user.getMetadata().getName()))
             .fetch();
 
     return new PageImpl<>(result, pageable, total);
@@ -68,18 +64,15 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
   }
 
 
-  private List<OrderSpecifier<?>> getOrderSpecifiers(Pageable pageable, Class<?> entityClass, String alias) {
-    List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+  private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable, Class<?> entityClass, String alias) {
     PathBuilder<?> pathBuilder = new PathBuilder<>(entityClass, alias);
 
-    for (Sort.Order order : pageable.getSort()) {
-      Order direction = order.isAscending() ? Order.ASC : Order.DESC;
-
-      // ComparableExpression으로 캐스팅
-      ComparableExpression<?> expression = pathBuilder.getComparable(order.getProperty(), Comparable.class);
-      orderSpecifiers.add(new OrderSpecifier<>(direction, expression));
-    }
-
-    return orderSpecifiers;
+    return pageable.getSort().stream()
+            .map(order -> {
+              Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+              ComparableExpression<?> expression = pathBuilder.getComparable(order.getProperty(), Comparable.class);
+              return new OrderSpecifier<>(direction, expression);
+            })
+            .toArray(OrderSpecifier<?>[]::new);
   }
 }

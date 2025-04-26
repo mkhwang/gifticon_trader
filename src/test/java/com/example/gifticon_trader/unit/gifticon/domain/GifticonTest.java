@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,12 +24,13 @@ class GifticonTest {
 
   @BeforeEach
   void setUp() {
-    given(command.getName()).willReturn("Test Gifticon");
-    given(command.getDescription()).willReturn("This is a test gifticon.");
-    given(command.getOriginalPrice()).willReturn(1000L);
-    given(command.getPrice()).willReturn(100L);
-    given(command.getExpirationDate()).willReturn(LocalDate.now());
-    given(command.getGiftCode()).willReturn("123456789");
+    given(command.name()).willReturn("Test Gifticon");
+    given(command.description()).willReturn("This is a test gifticon.");
+    given(command.originalPrice()).willReturn(1000L);
+    given(command.price()).willReturn(100L);
+    given(command.expirationDate()).willReturn(LocalDate.now());
+    given(command.giftCode()).willReturn("123456789");
+    given(command.tags()).willReturn(List.of("tag1", "tag2"));
   }
 
   @Test
@@ -52,7 +54,7 @@ class GifticonTest {
   @Test
   void test_GifticonCreation_shouldThrowException_when_expirationDateIsPast() {
     // given
-    given(command.getExpirationDate()).willReturn(LocalDate.now().minusDays(1));
+    given(command.expirationDate()).willReturn(LocalDate.now().minusDays(1));
 
     // when & then
     assertThatThrownBy(() -> Gifticon.fromCommand(command))
